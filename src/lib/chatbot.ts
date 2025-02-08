@@ -385,4 +385,24 @@ Instructions for adding additional data sources:
 5. Follow the same error handling and data formatting patterns as shown above.
 */
 
+async function runAgentOnce(prompt: string): Promise<string> {
+  try {
+    const { agent, config } = await initializeAgent();
+    let result = '';
+    const stream = await agent.stream({ messages: [new HumanMessage(prompt)] }, config);
+    for await (const chunk of stream) {
+      if ("agent" in chunk) {
+        result += chunk.agent.messages[0].content;
+      } else if ("tools" in chunk) {
+        result += chunk.tools.messages[0].content;
+      }
+    }
+    return result;
+  } catch (error) {
+    console.error("Error running agent for prompt:", prompt, error);
+    throw error;
+  }
+}
+
+export { runAgentOnce };
 export { initializeAgent };
