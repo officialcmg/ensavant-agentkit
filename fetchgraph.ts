@@ -27,6 +27,20 @@ const baseQuery = gql`
     }
   }
 `;
+// use this for computing totals
+const slimQuery = gql`
+  query fetchRecentRegistrationIds($targetTimestamp: BigInt!, $skip: Int!) {
+    nameRegistereds(
+      where: { blockTimestamp_gte: $targetTimestamp }
+      orderBy: blockNumber
+      orderDirection: desc
+      first: 100
+      skip: $skip
+    ) {
+      id
+    }
+  }
+`;
 
 async function fetchsubgraph(hours: number) {
   try {
@@ -86,7 +100,7 @@ async function fetchRegistrationCount(hours: number) {
     })}`);
 
     while (hasMore) {
-      const data: any = await request(url, baseQuery, { targetTimestamp, skip });
+      const data: any = await request(url, slimQuery, { targetTimestamp, skip });
       const nameRegistereds = data.nameRegistereds;
       count += nameRegistereds.length;
 
