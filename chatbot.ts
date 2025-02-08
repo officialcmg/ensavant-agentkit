@@ -154,7 +154,7 @@ async function initializeAgent() {
 
     const fetchRegistrationCountTool = new DynamicTool({
       name: "fetchRegistrationCount",
-      description: "Fetches the number of ENS domain registrations from the subgraph API for the past specified hours.",
+      description: "Fetches the number of ENS domain registrations from the subgraph API for the past specified hours. Returns a number",
       func: async (input) => {
         const hours = parseInt(input, 10);
         if (isNaN(hours)) {
